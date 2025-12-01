@@ -29,6 +29,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION["role"] = $row["role"];
                 $_SESSION["name"] = $row["name"];
                 $_SESSION["email"] = $row["email"];
+                
+                // For backward compatibility with admin files
+                if ($row["role"] === "Administrator") {
+                    $_SESSION['admin_id'] = $row['user_id'];
+                    $_SESSION['admin_name'] = $row['name'];
+                }
 
                 // Redirect user based on role
                 if ($row["role"] === "Administrator") {
@@ -150,6 +156,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             color: #0c750c;
             background-color: #e6ffe6;
         }
+        
+        .demo-credentials {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #718096;
+            border-left: 4px solid #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -179,6 +195,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <?php echo $message; ?>
         </div>
     <?php endif; ?>
+    
+
 </div>
 
 </body>
