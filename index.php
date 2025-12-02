@@ -78,6 +78,7 @@ session_start();
                 <a href="needy_dashboard.php">Needy Dashboard</a>
             <?php elseif ($_SESSION['role'] === 'Restaurant'): ?>
                 <a href="restaurant.php">Restaurant Dashboard</a>
+                <a href="edit_profile.php">Edit Profile</a>
             <?php elseif ($_SESSION['role'] === 'Customer'): ?>
                 <a href="customer_dashboard.php">Customer Dashboard</a>
                 <a href="customer_orders.php">My Orders</a>
