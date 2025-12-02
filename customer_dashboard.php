@@ -118,11 +118,9 @@ $reservations->close();
 <!-- Navigation Bar -->
 <nav>
     <a href="index.php">Home</a>
-    <a href="customer_dashboard.php">Plates</a>
-    <a href="customer_reservations.php">Reservations</a>
-    <a href="logout.php">Logout</a>
+    <a href="register.php">Register</a>
+    <a href="edit_profile.php">Edit Profile</a>
 </nav>
-
 
 <div class="container">
     <h2>Welcome, <?php echo htmlspecialchars($customer_name); ?>!</h2>
@@ -162,6 +160,34 @@ $reservations->close();
             </tr>
         <?php endwhile; ?>
     </table>
+
+
+    <h3>Your Reservations</h3>
+
+    <?php if ($reservations_result->num_rows > 0): ?>
+        <table>
+            <tr>
+                <th>Restaurant</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Total Paid</th>
+                <th>Time</th>
+            </tr>
+
+            <?php while ($r = $reservations_result->fetch_assoc()): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($r['restaurant_name']); ?></td>
+                    <td><?php echo htmlspecialchars($r['description']); ?></td>
+                    <td><?php echo $r['quantity']; ?></td>
+                    <td>$<?php echo number_format($r['quantity'] * $r['price'], 2); ?></td>
+                    <td><?php echo htmlspecialchars($r['reserved_at']); ?></td>
+                </tr>
+            <?php endwhile; ?>
+
+        </table>
+    <?php else: ?>
+        <p>No reservations yet.</p>
+    <?php endif; ?>
 
 </div>
 
