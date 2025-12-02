@@ -66,7 +66,7 @@
         <a href="register.php">Register</a>
         <a href="login.php">Login</a>
         <a href="edit_profile.php">Edit Profile</a>
-        <a href="restaurant.php">Restaurant Page</a>
+        <a href="logout.php">Logout</a>
         <!-- Add more as needed -->
     </div>
 </main>

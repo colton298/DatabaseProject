@@ -52,20 +52,28 @@ if ($_POST) {
             break;
             
         case 'Donor Purchases':
-            $sql = "SELECT u.name, p.description, t.amount, t.transaction_date 
-                    FROM transactions t
-                    JOIN users u ON t.user_id = u.user_id
-                    LEFT JOIN plates p ON t.plate_id = p.plate_id
-                    WHERE YEAR(t.transaction_date) = ? AND u.user_id = ? 
-                    AND t.transaction_type = 'Donation'";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ii", $year, $user_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $reports[] = $row;
-            }
-            break;
+    $sql = "SELECT 
+                u.name AS donor_name,
+                p.description AS plate_description,
+                p.price,
+                d.quantity,
+                d.donated_at
+            FROM donations d
+            JOIN users u ON d.donor_id = u.user_id
+            JOIN plates p ON d.plate_id = p.plate_id
+            WHERE YEAR(d.donated_at) = ?
+              AND d.donor_id = ?";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $year, $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    while ($row = $result->fetch_assoc()) {
+        $reports[] = $row;
+    }
+    break;
+
     }
 }
 
@@ -150,11 +158,20 @@ $needy = getUsersByRole($conn, 'Needy');
                         <th>Total Plates Sold</th>
                         <th>Total Revenue</th>
                     <?php else: ?>
-                        <th>User Name</th>
-                        <th>Plate Description</th>
-                        <th>Amount</th>
-                        <th>Transaction Date</th>
+                        <?php if ($report_type == 'Donor Purchases'): ?>
+                            <th>Donor Name</th>
+                            <th>Plate Description</th>
+                            <th>Price</th>
+                            <th>Quantity Donated</th>
+                            <th>Date Donated</th>
+                        <?php else: ?>
+                            <th>User Name</th>
+                            <th>Plate Description</th>
+                            <th>Amount</th>
+                            <th>Transaction Date</th>
+                        <?php endif; ?>
                     <?php endif; ?>
+
                 </tr>
             </thead>
             <tbody>
@@ -163,16 +180,25 @@ $needy = getUsersByRole($conn, 'Needy');
                     <?php if ($report_type == 'Restaurant Activity'): ?>
                         <td><?php echo htmlspecialchars($report['restaurant_name']); ?></td>
                         <td><?php echo htmlspecialchars($report['description']); ?></td>
-                        <td>$<?php echo number_format($report['price'], 2); ?></td>
+                        <td>$<?php echo number_format($report['price'] ?? 0, 2); ?></td>
                         <td><?php echo $report['quantity']; ?></td>
                         <td><?php echo $report['reservations_sold']; ?></td>
                         <td><?php echo $report['total_plates_sold']; ?></td>
-                        <td>$<?php echo number_format($report['total_revenue'], 2); ?></td>
+                        <td>$<?php echo number_format($report['total_revenue'] ?? 0, 2); ?></td>
                     <?php else: ?>
-                        <td><?php echo htmlspecialchars($report['name']); ?></td>
-                        <td><?php echo htmlspecialchars($report['description']); ?></td>
-                        <td>$<?php echo number_format($report['amount'], 2); ?></td>
-                        <td><?php echo date('M j, Y H:i', strtotime($report['transaction_date'])); ?></td>
+                            <?php if ($report_type == 'Donor Purchases'): ?>
+                                <td><?php echo htmlspecialchars($report['donor_name']); ?></td>
+                                <td><?php echo htmlspecialchars($report['plate_description']); ?></td>
+                                <td>$<?php echo number_format($report['price'], 2); ?></td>
+                                <td><?php echo $report['quantity']; ?></td>
+                                <td><?php echo date('M j, Y H:i', strtotime($report['donated_at'])); ?></td>
+                            <?php else: ?>
+                                <td><?php echo htmlspecialchars($report['name']); ?></td>
+                                <td><?php echo htmlspecialchars($report['description']); ?></td>
+                                <td>$<?php echo number_format($report['amount'] ?? 0, 2); ?></td>
+                                <td><?php echo date('M j, Y H:i', strtotime($report['transaction_date'])); ?></td>
+                        <?php endif; ?>
+
                     <?php endif; ?>
                 </tr>
                 <?php endforeach; ?>

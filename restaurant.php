@@ -228,7 +228,6 @@ $stmt->close();
                 <th>Quantity</th>
                 <th>Available From</th>
                 <th>Available Until</th>
-                <th>Status</th>
             </tr>
             <?php while ($row = $plates->fetch_assoc()): ?>
                 <tr>
@@ -237,7 +236,6 @@ $stmt->close();
                     <td><?php echo (int)$row['quantity']; ?></td>
                     <td><?php echo htmlspecialchars($row['available_from']); ?></td>
                     <td><?php echo htmlspecialchars($row['available_until']); ?></td>
-                    <td><?php echo htmlspecialchars($row['status']); ?></td>
                 </tr>
             <?php endwhile; ?>
         </table>
