@@ -187,7 +187,7 @@ $stmt->close();
 <nav>
     <a href="index.php">Home</a>
     <a href="edit_profile.php">Edit Profile</a>
-    <a href="login.php">Login</a>
+    <a href="logout.php">Logout</a>
 </nav>
 
 <div class="container">
