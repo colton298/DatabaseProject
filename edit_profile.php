@@ -186,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <nav>
     <a href="index.php">Home</a>
-    <a href="login.php">Login</a>
+    <a href="restaurant.php">Restaurant Dashboard</a>
     <a href="logout.php">Logout</a>
 </nav>
 
